@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import {
   ShieldCheck, LogOut, Save, RefreshCw, Download, Globe,
   Sparkles, MessageSquare, Disc as Discord, CheckCircle2, AlertCircle, FileText,
-  Upload, FileCheck
+  Upload, FileCheck, Info
 } from 'lucide-react';
 import { SiteConfig } from '@/types';
 
@@ -91,11 +91,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig })
         });
         setUploadStatus(`Uploaded: ${file.name}`);
       } else {
-        setToastMessage({ type: 'error', text: data.error || 'Failed to upload APK file.' });
+        setToastMessage({
+          type: 'error',
+          text: data.error || 'Vercel serverless limit (4.5MB). Please paste direct URL below or use VPS.',
+        });
         setUploadStatus(null);
       }
     } catch (err) {
-      setToastMessage({ type: 'error', text: 'Network error during APK upload.' });
+      setToastMessage({
+        type: 'error',
+        text: 'Vercel 4.5MB request limit reached. Paste your direct GitHub Release/CDN link in the field below.',
+      });
       setUploadStatus(null);
     } finally {
       setUploading(false);
@@ -296,6 +302,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig })
                   <span className="text-xs text-slate-400">Supports `.apk` format. Automatically updates download links & file size.</span>
                 </div>
               </div>
+
+              {/* Vercel vs VPS Helper Note */}
+              <div className="bg-purple-950/30 border border-purple-500/20 p-3.5 rounded-xl text-xs text-slate-300 flex items-start space-x-2.5">
+                <Info className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                <div className="leading-relaxed">
+                  <span className="font-bold text-white">Vercel vs VPS Hosting Tip: </span>
+                  Vercel Serverless free tier caps direct browser uploads at 4.5MB. For large APKs (100MB-500MB+) on Vercel, paste your direct GitHub Release/Drive link in the input field below! (Direct file uploads work without limits when self-hosted on VPS/Docker).
+                </div>
+              </div>
             </div>
 
             <div>
@@ -306,7 +321,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig })
                   type="text"
                   value={config.primaryApkUrl}
                   onChange={(e) => setConfig({ ...config, primaryApkUrl: e.target.value })}
-                  placeholder="/downloads/AniSpin-v1.2.0.apk or https://yourdomain.com/AniSpin.apk"
+                  placeholder="/downloads/AniSpin-v1.2.0.apk or https://github.com/.../AniSpin.apk"
                   className="w-full bg-void-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500 font-mono"
                 />
               </div>

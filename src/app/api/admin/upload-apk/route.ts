@@ -4,11 +4,11 @@ import fs from 'fs';
 import path from 'path';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
+import { put } from '@vercel/blob';
 import { saveSiteConfig } from '@/lib/configStore';
 
 const AUTH_COOKIE_NAME = 'anispin_admin_session';
 
-// Set max execution timeout to 5 minutes (300 seconds) for large 500MB+ APK files
 export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
@@ -35,25 +35,31 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'File must have a .apk extension' }, { status: 400 });
     }
 
-    // Ensure target directory public/downloads exists
-    const downloadsDir = path.join(process.cwd(), 'public', 'downloads');
-    if (!fs.existsSync(downloadsDir)) {
-      fs.mkdirSync(downloadsDir, { recursive: true });
-    }
-
     const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.-_]/g, '_');
-    const filePath = path.join(downloadsDir, sanitizedFileName);
-
-    // High performance stream writing for large 500MB+ files
-    const fileStream = file.stream();
-    const nodeReadable = Readable.fromWeb(fileStream as any);
-    const writeStream = fs.createWriteStream(filePath);
-
-    await pipeline(nodeReadable, writeStream);
-
-    // Calculate file size formatted
     const sizeInMB = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
-    const publicUrl = `/downloads/${sanitizedFileName}`;
+    let publicUrl = `/downloads/${sanitizedFileName}`;
+
+    // If running on Vercel with Blob Token configured
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      const blob = await put(`downloads/${sanitizedFileName}`, file, {
+        access: 'public',
+        addRandomSuffix: false,
+      });
+      publicUrl = blob.url;
+    } else {
+      // Local / VPS filesystem storage
+      const downloadsDir = path.join(process.cwd(), 'public', 'downloads');
+      if (!fs.existsSync(downloadsDir)) {
+        fs.mkdirSync(downloadsDir, { recursive: true });
+      }
+
+      const filePath = path.join(downloadsDir, sanitizedFileName);
+      const fileStream = file.stream();
+      const nodeReadable = Readable.fromWeb(fileStream as any);
+      const writeStream = fs.createWriteStream(filePath);
+
+      await pipeline(nodeReadable, writeStream);
+    }
 
     // Automatically update site config primary download URL & file size
     const updatedConfig = saveSiteConfig({
@@ -63,13 +69,16 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: `APK file successfully uploaded (${sizeInMB}): ${sanitizedFileName}`,
+      message: `APK file successfully uploaded (${sizeInMB})`,
       url: publicUrl,
       size: sizeInMB,
       config: updatedConfig,
     });
   } catch (error: any) {
-    console.error('Error handling large APK upload:', error);
-    return NextResponse.json({ error: error.message || 'Failed to process APK upload' }, { status: 500 });
+    console.error('Error handling APK upload:', error);
+    return NextResponse.json(
+      { error: error.message || 'Failed to process APK upload. If uploading to Vercel, please paste direct URL or configure Vercel Blob.' },
+      { status: 500 }
+    );
   }
 }
