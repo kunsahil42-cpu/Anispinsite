@@ -6,6 +6,11 @@ const nextConfig = {
     unoptimized: true,
   },
   devIndicators: false,
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '1gb',
+    },
+  },
 }
 
 module.exports = nextConfig
