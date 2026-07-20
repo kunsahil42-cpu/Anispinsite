@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  anispin-site:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: anispin-web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - ADMIN_PASSWORD=anispin2026
+    volumes:
+      - ./data:/app/data
