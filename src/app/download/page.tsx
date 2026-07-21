@@ -7,6 +7,8 @@ export const metadata = {
   description: 'Download the latest AniSpin APK for Android. Verified SHA-256 checksum, multiple mirrors, ad-free anime streaming & manga reading.',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default function DownloadPage() {
   const config = getSiteConfig();
 

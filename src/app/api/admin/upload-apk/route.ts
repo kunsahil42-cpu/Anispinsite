@@ -23,17 +23,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized admin access' }, { status: 401 });
   }
 
-  try {
-    const formData = await request.formData();
-    const file = formData.get('file') as File | null;
+  return NextResponse.json(
+    { error: 'Direct APK uploads are disabled. To comply with requirements, APKs must be uploaded directly to GitHub Releases and mapped via configuration URLs in the Admin Dashboard.' },
+    { status: 400 }
+  );
+}
 
-    if (!file) {
-      return NextResponse.json({ error: 'No APK file provided in request' }, { status: 400 });
-    }
-
-    if (!file.name.endsWith('.apk')) {
-      return NextResponse.json({ error: 'File must have a .apk extension' }, { status: 400 });
-    }
+// Old upload handler logic removed to enforce GitHub Releases exclusive policy.
+/*
+async function oldUploadHandler(request: Request) {
 
     const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.-_]/g, '_');
     const sizeInMB = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
@@ -82,3 +80,4 @@ export async function POST(request: Request) {
     );
   }
 }
+*/

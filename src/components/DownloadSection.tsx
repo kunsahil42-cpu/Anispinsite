@@ -70,6 +70,16 @@ export const DownloadSection: React.FC<DownloadSectionProps> = ({ config }) => {
                   <span className="text-xs font-bold text-slate-200">{config.minAndroidVersion}</span>
                 </div>
               </div>
+
+              {/* Dynamic Release Notes */}
+              {config.releaseNotes && (
+                <div className="bg-void-950/40 p-5 rounded-2xl border border-white/5 space-y-2 mt-4">
+                  <span className="text-[10px] text-purple-400 uppercase font-bold block tracking-wider">What's New in this Version</span>
+                  <div className="text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line">
+                    {config.releaseNotes}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Direct Download Action */}
@@ -85,25 +95,51 @@ export const DownloadSection: React.FC<DownloadSectionProps> = ({ config }) => {
 
               {/* Store buttons */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-void-950/80 p-3 rounded-2xl border border-white/5 flex items-center space-x-3 opacity-80">
-                  <Play className="w-5 h-5 text-slate-400" />
-                  <div className="text-left">
-                    <div className="text-[9px] text-slate-500 uppercase font-bold">Google Play</div>
-                    <div className="text-xs font-semibold text-slate-300">
-                      {config.playStoreEnabled ? 'Available on Play Store' : 'Coming Soon'}
+                {config.playStoreEnabled ? (
+                  <a
+                    href={config.playStoreUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-void-950/80 p-3 rounded-2xl border border-emerald-500/30 hover:border-emerald-400/60 flex items-center space-x-3 transition-colors group"
+                  >
+                    <Play className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
+                    <div className="text-left">
+                      <div className="text-[9px] text-slate-450 uppercase font-bold">Google Play</div>
+                      <div className="text-xs font-semibold text-white">Get on Play Store</div>
+                    </div>
+                  </a>
+                ) : (
+                  <div className="bg-void-950/80 p-3 rounded-2xl border border-white/5 flex items-center space-x-3 opacity-50 cursor-not-allowed">
+                    <Play className="w-5 h-5 text-slate-500" />
+                    <div className="text-left">
+                      <div className="text-[9px] text-slate-500 uppercase font-bold">Google Play</div>
+                      <div className="text-xs font-semibold text-slate-400">Coming Soon</div>
                     </div>
                   </div>
-                </div>
+                )}
 
-                <div className="bg-void-950/80 p-3 rounded-2xl border border-white/5 flex items-center space-x-3 opacity-80">
-                  <Apple className="w-5 h-5 text-slate-400" />
-                  <div className="text-left">
-                    <div className="text-[9px] text-slate-500 uppercase font-bold">App Store</div>
-                    <div className="text-xs font-semibold text-slate-300">
-                      {config.appStoreEnabled ? 'Available on iOS' : 'Coming Soon'}
+                {config.appStoreEnabled ? (
+                  <a
+                    href={config.appStoreUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-void-950/80 p-3 rounded-2xl border border-emerald-500/30 hover:border-emerald-400/60 flex items-center space-x-3 transition-colors group"
+                  >
+                    <Apple className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
+                    <div className="text-left">
+                      <div className="text-[9px] text-slate-450 uppercase font-bold">App Store</div>
+                      <div className="text-xs font-semibold text-white">Download on iOS</div>
+                    </div>
+                  </a>
+                ) : (
+                  <div className="bg-void-950/80 p-3 rounded-2xl border border-white/5 flex items-center space-x-3 opacity-50 cursor-not-allowed">
+                    <Apple className="w-5 h-5 text-slate-500" />
+                    <div className="text-left">
+                      <div className="text-[9px] text-slate-500 uppercase font-bold">App Store</div>
+                      <div className="text-xs font-semibold text-slate-400">Coming Soon</div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
 

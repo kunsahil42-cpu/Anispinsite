@@ -1,13 +1,13 @@
 {
   "appName": "AniSpin",
   "tagline": "Your Next-Generation Dual Anime Streaming & Manga Reading Ecosystem",
-  "heroBadgeText": "v1.2.0 Official Release",
-  "version": "1.2.0",
+  "heroBadgeText": "v2.0.0 Official Release",
+  "version": "2.0.0",
   "releaseDate": "July 2026",
   "apkSize": "24.8 MB",
   "minAndroidVersion": "Android 8.0 (Oreo) or higher",
   "sha256Hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "primaryApkUrl": "/downloads/AniSpin-v1.2.0.apk",
+  "primaryApkUrl": "https://github.com/kunsahil42-cpu/AniSpin-v2/releases/download/v2.0.0/AniSpin.apk",
   "mirrors": [
     {
       "id": "1",
@@ -58,5 +58,86 @@
     "primaryAccent": "#A855F7",
     "darkVoidBackground": "#0B0B11",
     "particleDensity": "high"
-  }
+  },
+  "releaseNotes": "Added Predictive Episode Broadcast alert card with local timezone conversion.\nAdded 5-Dot Anime Roll and Manga Roll random recommendation engine.\nAdded Cache Manager with automatic image cache cleaner in Settings.\nAdded full support for Android 15 & edge-to-edge navigation.",
+  "changelog": [
+    {
+      "id": "v2.0.0",
+      "version": "v2.0.0",
+      "date": "July 2026",
+      "title": "Official AniSpin v2.0.0 Release",
+      "tag": "Major Release",
+      "changes": {
+        "added": [
+          "Upgraded codebase architecture to support dynamic GitHub Release configurations.",
+          "Implemented remote site-config dashboard for real-time app distribution management.",
+          "Added full dynamic Google Play and iOS App Store badge toggle support."
+        ],
+        "improved": [
+          "Optimized server-side data fetching for instant app state sync.",
+          "Enhanced cyberpunk neon UI responsiveness and custom themes."
+        ],
+        "fixed": [
+          "Resolved static path caching in production deployment."
+        ]
+      }
+    },
+    {
+      "id": "v1.2.0",
+      "version": "v1.2.0",
+      "date": "July 2026",
+      "title": "Predictive Episode Timers & Enhanced Reader",
+      "tag": "Major Release",
+      "changes": {
+        "added": [
+          "Added Predictive Episode Broadcast alert card with local timezone conversion.",
+          "Added 5-Dot Anime Roll and Manga Roll random recommendation engine.",
+          "Added Cache Manager with automatic image cache cleaner in Settings.",
+          "Added full support for Android 15 & edge-to-edge navigation."
+        ],
+        "improved": [
+          "Upgraded Manga Reader scrolling smoothness and page 1/N gesture accuracy.",
+          "Enhanced Material 3 System Purple theme contrast and neon lighting effects.",
+          "Reduced memory consumption during 1080p playback by 35%."
+        ],
+        "fixed": [
+          "Fixed occasional episode progress sync reset on app minimize.",
+          "Fixed poster image flicker in search results grid."
+        ]
+      }
+    },
+    {
+      "id": "v1.1.0",
+      "version": "v1.1.0",
+      "date": "May 2026",
+      "title": "Dual Anime & Manga Switch Engine",
+      "tag": "Feature Update",
+      "changes": {
+        "added": [
+          "Introduced unified top toggle for Anime and Manga mode in Home & Search screens.",
+          "Added Favorites vault with cloud backup export feature.",
+          "Added genre filter tags (Action, Slice of Life, Supernatural, Fantasy)."
+        ],
+        "improved": [
+          "Accelerated search indexing response time to under 50ms."
+        ],
+        "fixed": [
+          "Resolved subtitle sync lag on slow networks."
+        ]
+      }
+    },
+    {
+      "id": "v1.0.0",
+      "version": "v1.0.0",
+      "date": "March 2026",
+      "title": "Initial Public Release",
+      "tag": "Patch Fix",
+      "changes": {
+        "added": [
+          "Core anime video player and manga reader engines.",
+          "Dark mode Material 3 design system with custom purple theme."
+        ]
+      }
+    }
+  ]
 }

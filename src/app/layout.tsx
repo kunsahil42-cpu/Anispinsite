@@ -6,6 +6,8 @@ import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
 import { ParticleBackground } from '@/components/ParticleBackground';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata(): Promise<Metadata> {
   const config = getSiteConfig();
   return {

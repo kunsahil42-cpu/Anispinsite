@@ -1,10 +1,14 @@
 'use client';
 
 import React from 'react';
-import { History, PlusCircle, Wrench, CheckCircle2, Tag } from 'lucide-react';
-import { changelogData } from '@/lib/data';
+import { History, PlusCircle, Wrench, CheckCircle2 } from 'lucide-react';
+import { ChangelogItem } from '@/types';
 
-export const ChangelogSection: React.FC = () => {
+interface ChangelogSectionProps {
+  changelog: ChangelogItem[];
+}
+
+export const ChangelogSection: React.FC<ChangelogSectionProps> = ({ changelog }) => {
   return (
     <section className="py-24 bg-void-900/40 relative overflow-hidden border-t border-purple-900/30">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -22,10 +26,10 @@ export const ChangelogSection: React.FC = () => {
             Track our continuous updates, features, improvements, and performance optimizations.
           </p>
         </div>
-
+ 
         {/* Timeline Container */}
         <div className="relative border-l-2 border-purple-500/30 ml-4 sm:ml-8 space-y-12 pl-6 sm:pl-10">
-          {changelogData.map((item) => (
+          {changelog.map((item) => (
             <div key={item.id} className="relative group">
               
               {/* Node Marker */}

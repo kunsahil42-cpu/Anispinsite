@@ -34,6 +34,8 @@ export interface SiteConfig {
     darkVoidBackground: string;
     particleDensity: 'low' | 'medium' | 'high';
   };
+  releaseNotes?: string;
+  changelog?: ChangelogItem[];
 }
 
 export interface AppScreenshot {

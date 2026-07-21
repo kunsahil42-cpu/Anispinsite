@@ -84,26 +84,52 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config, screenshot }) 
               <div className="flex items-center justify-center lg:justify-start space-x-3 pt-2 text-xs">
                 
                 {/* Google Play Button */}
-                <div className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-void-850 border border-white/10 text-slate-400 opacity-90">
-                  <Play className="w-4 h-4 text-slate-300" />
-                  <div className="text-left">
-                    <div className="text-[10px] text-slate-500 uppercase font-bold">Google Play</div>
-                    <div className="text-[11px] font-semibold text-slate-300">
-                      {config.playStoreEnabled ? 'Get it on Play Store' : 'Coming Soon'}
+                {config.playStoreEnabled ? (
+                  <a
+                    href={config.playStoreUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-void-850 border border-purple-500/30 hover:border-purple-400 text-white transition-colors group"
+                  >
+                    <Play className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" />
+                    <div className="text-left">
+                      <div className="text-[10px] text-slate-400 uppercase font-bold">Google Play</div>
+                      <div className="text-[11px] font-semibold text-white">Get it on Play Store</div>
+                    </div>
+                  </a>
+                ) : (
+                  <div className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-void-850 border border-white/10 text-slate-400 opacity-60 cursor-not-allowed">
+                    <Play className="w-4 h-4 text-slate-500" />
+                    <div className="text-left">
+                      <div className="text-[10px] text-slate-500 uppercase font-bold">Google Play</div>
+                      <div className="text-[11px] font-semibold text-slate-450">Coming Soon</div>
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* App Store Button */}
-                <div className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-void-850 border border-white/10 text-slate-400 opacity-90">
-                  <Apple className="w-4 h-4 text-slate-300" />
-                  <div className="text-left">
-                    <div className="text-[10px] text-slate-500 uppercase font-bold">App Store</div>
-                    <div className="text-[11px] font-semibold text-slate-300">
-                      {config.appStoreEnabled ? 'Download on iOS' : 'Coming Soon'}
+                {config.appStoreEnabled ? (
+                  <a
+                    href={config.appStoreUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-void-850 border border-purple-500/30 hover:border-purple-400 text-white transition-colors group"
+                  >
+                    <Apple className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" />
+                    <div className="text-left">
+                      <div className="text-[10px] text-slate-400 uppercase font-bold">App Store</div>
+                      <div className="text-[11px] font-semibold text-white">Download on iOS</div>
+                    </div>
+                  </a>
+                ) : (
+                  <div className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-void-850 border border-white/10 text-slate-400 opacity-60 cursor-not-allowed">
+                    <Apple className="w-4 h-4 text-slate-500" />
+                    <div className="text-left">
+                      <div className="text-[10px] text-slate-500 uppercase font-bold">App Store</div>
+                      <div className="text-[11px] font-semibold text-slate-450">Coming Soon</div>
                     </div>
                   </div>
-                </div>
+                )}
 
               </div>
             </div>

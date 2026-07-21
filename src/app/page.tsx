@@ -11,6 +11,8 @@ import { CommunitySection } from '@/components/CommunitySection';
 import { Sparkles, Layers, ShieldCheck, Heart, Zap, Compass } from 'lucide-react';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 export default function HomePage() {
   const config = getSiteConfig();
   const homeScreenshot = appScreenshots.find((s) => s.id === 'home') || appScreenshots[0];
@@ -105,7 +107,7 @@ export default function HomePage() {
       <DownloadSection config={config} />
 
       {/* 6. Changelog Section */}
-      <ChangelogSection />
+      <ChangelogSection changelog={config.changelog || []} />
 
       {/* 7. FAQ Section */}
       <FAQSection />
