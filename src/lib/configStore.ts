@@ -37,8 +37,9 @@ export async function getSiteConfig(): Promise<SiteConfig> {
         const res = await fetch(url, { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
-          cachedConfig = { ...initialSiteConfig, ...data };
-          return cachedConfig;
+          const config = { ...initialSiteConfig, ...data };
+          cachedConfig = config;
+          return config;
         }
       }
     } catch (error) {
@@ -51,8 +52,9 @@ export async function getSiteConfig(): Promise<SiteConfig> {
     if (fs.existsSync(TMP_CONFIG_FILE_PATH)) {
       const fileData = fs.readFileSync(TMP_CONFIG_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
-      cachedConfig = { ...initialSiteConfig, ...parsed };
-      return cachedConfig;
+      const config = { ...initialSiteConfig, ...parsed };
+      cachedConfig = config;
+      return config;
     }
   } catch (error) {
     // Normal if file does not exist yet
@@ -63,8 +65,9 @@ export async function getSiteConfig(): Promise<SiteConfig> {
     if (fs.existsSync(CONFIG_FILE_PATH)) {
       const fileData = fs.readFileSync(CONFIG_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
-      cachedConfig = { ...initialSiteConfig, ...parsed };
-      return cachedConfig;
+      const config = { ...initialSiteConfig, ...parsed };
+      cachedConfig = config;
+      return config;
     }
   } catch (error) {
     console.error('Failed to read site config file, using default:', error);
