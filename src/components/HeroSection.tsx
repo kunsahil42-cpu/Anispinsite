@@ -53,7 +53,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ config, screenshot }) 
               </div>
               <div className="flex items-center space-x-2 text-xs text-slate-300 bg-surface-container/50 p-2 rounded-xl border border-white/5">
                 <Zap className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span>Under 25MB APK</span>
+                <span>Under 70MB APK</span>
               </div>
               <div className="flex items-center space-x-2 text-xs text-slate-300 bg-surface-container/50 p-2 rounded-xl border border-white/5 col-span-2 sm:col-span-1">
                 <Shield className="w-4 h-4 text-emerald-400 shrink-0" />
