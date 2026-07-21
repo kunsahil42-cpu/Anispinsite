@@ -33,8 +33,8 @@ export async function POST(request: Request) {
       pinned: false
     };
 
-    const currentMessages = getMessages();
-    saveMessages([newMessage, ...currentMessages]);
+    const currentMessages = await getMessages();
+    await saveMessages([newMessage, ...currentMessages]);
 
     return NextResponse.json({ success: true, message: 'Your message has been submitted successfully!' });
   } catch (error: any) {

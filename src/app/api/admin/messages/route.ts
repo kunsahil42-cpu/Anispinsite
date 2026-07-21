@@ -15,7 +15,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized admin access' }, { status: 401 });
   }
 
-  const messages = getMessages();
+  const messages = await getMessages();
   return NextResponse.json(messages);
 }
 
@@ -31,7 +31,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Message ID is required' }, { status: 400 });
     }
 
-    const messages = getMessages();
+    const messages = await getMessages();
     const messageIndex = messages.findIndex(m => m.id === id);
 
     if (messageIndex === -1) {
@@ -48,7 +48,7 @@ export async function PUT(request: Request) {
       messages[messageIndex].pinned = pinned;
     }
 
-    saveMessages(messages);
+    await saveMessages(messages);
     return NextResponse.json({ success: true, message: messages[messageIndex] });
   } catch (error: any) {
     console.error('Error updating message:', error);
@@ -69,14 +69,14 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Message ID is required' }, { status: 400 });
     }
 
-    const messages = getMessages();
+    const messages = await getMessages();
     const updatedMessages = messages.filter(m => m.id !== id);
 
     if (messages.length === updatedMessages.length) {
       return NextResponse.json({ error: 'Message not found' }, { status: 404 });
     }
 
-    saveMessages(updatedMessages);
+    await saveMessages(updatedMessages);
     return NextResponse.json({ success: true, message: 'Message successfully deleted' });
   } catch (error: any) {
     console.error('Error deleting message:', error);
