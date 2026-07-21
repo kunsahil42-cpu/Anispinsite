@@ -118,22 +118,21 @@ export const ScreenshotsSection: React.FC<ScreenshotsSectionProps> = ({ screensh
             <ChevronRight className="w-6 h-6" />
           </button>
 
-          {/* Swipeable Motion Content Card */}
-          <motion.div
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.2}
-            onDragEnd={handleDragEnd}
-            className="cursor-grab active:cursor-grabbing touch-pan-y"
-          >
+          {/* Static Card Container Frame */}
+          <div className="bg-surface-container/40 rounded-3xl border border-white/10 shadow-2xl overflow-hidden relative">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={activeScreenshot.id}
-                initial={{ opacity: 0, x: direction > 0 ? 80 : -80 }}
+                custom={direction}
+                initial={{ opacity: 0, x: direction > 0 ? 30 : -30 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: direction > 0 ? -80 : 80 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center bg-surface-container/40 p-6 sm:p-10 rounded-3xl border border-white/10 shadow-2xl"
+                exit={{ opacity: 0, x: direction > 0 ? -30 : 30 }}
+                transition={{ duration: 0.25, ease: 'easeInOut' }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.15}
+                onDragEnd={handleDragEnd}
+                className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center p-6 sm:p-10 cursor-grab active:cursor-grabbing touch-pan-y"
               >
                 {/* Actual Screenshot Image Column */}
                 <div className="lg:col-span-5 flex justify-center">
@@ -206,7 +205,7 @@ export const ScreenshotsSection: React.FC<ScreenshotsSectionProps> = ({ screensh
                 </div>
               </motion.div>
             </AnimatePresence>
-          </motion.div>
+          </div>
 
           {/* Dots Indicator */}
           <div className="flex justify-center items-center space-x-2 pt-6">
