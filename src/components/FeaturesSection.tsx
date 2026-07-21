@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Layers, Dices, Clock, Sparkles, BarChart3, Zap, ChevronRight } from 'lucide-react';
+import { Layers, Dices, Clock, Sparkles, BarChart3, Zap } from 'lucide-react';
 import { featureCards } from '@/lib/data';
 
 const iconMap: Record<string, any> = {
@@ -63,14 +63,9 @@ export const FeaturesSection: React.FC = () => {
                     {card.title}
                   </h3>
 
-                  <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                  <p className="text-slate-400 text-sm leading-relaxed">
                     {card.description}
                   </p>
-                </div>
-
-                <div className="pt-4 border-t border-white/5 flex items-center text-xs font-semibold text-purple-400 group-hover:text-cyan-300 transition-colors">
-                  <span>Explore capability</span>
-                  <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
             );
