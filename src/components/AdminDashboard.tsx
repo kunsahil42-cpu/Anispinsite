@@ -783,7 +783,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig })
                 {/* Hero CTA main button */}
                 <div className="px-5 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 via-purple-700 to-cyan-500 text-white font-bold text-xs flex items-center justify-center space-x-2 shadow-neon-purple max-w-sm">
                   <Download className="w-3.5 h-3.5" />
-                  <span>Download APK ({config.apkSize || '24.8 MB'})</span>
+                  <span>Download APK ({config.apkSize || '70 MB'})</span>
                 </div>
 
                 {/* Hero store button controls */}
