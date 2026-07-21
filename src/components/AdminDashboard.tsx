@@ -427,7 +427,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig })
                       type="text"
                       value={config.apkSize}
                       onChange={(e) => setConfig({ ...config, apkSize: e.target.value })}
-                      placeholder="e.g. 24.8 MB"
+                      placeholder="e.g. 70 MB"
                       className="w-full bg-void-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500"
                     />
                   </div>
