@@ -60,7 +60,7 @@ async function oldUploadHandler(request: Request) {
     }
 
     // Automatically update site config primary download URL & file size
-    const updatedConfig = saveSiteConfig({
+    const updatedConfig = await saveSiteConfig({
       primaryApkUrl: publicUrl,
       apkSize: sizeInMB,
     });

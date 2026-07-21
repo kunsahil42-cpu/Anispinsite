@@ -7,8 +7,8 @@ export const metadata = {
   description: 'Join the official AniSpin Discord server and Reddit community. Connect with otaku fans, report issues, and request anime/manga features.',
 };
 
-export default function CommunityPage() {
-  const config = getSiteConfig();
+export default async function CommunityPage() {
+  const config = await getSiteConfig();
   return (
     <div className="pt-20">
       <CommunitySection config={config} />

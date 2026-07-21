@@ -9,8 +9,8 @@ export const metadata = {
 
 export const dynamic = 'force-dynamic';
 
-export default function ChangelogPage() {
-  const config = getSiteConfig();
+export default async function ChangelogPage() {
+  const config = await getSiteConfig();
 
   return (
     <div className="pt-20">

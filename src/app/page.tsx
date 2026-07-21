@@ -13,8 +13,8 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-export default function HomePage() {
-  const config = getSiteConfig();
+export default async function HomePage() {
+  const config = await getSiteConfig();
   const homeScreenshot = appScreenshots.find((s) => s.id === 'home') || appScreenshots[0];
 
   return (

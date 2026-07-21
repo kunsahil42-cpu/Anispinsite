@@ -9,7 +9,7 @@ import { ParticleBackground } from '@/components/ParticleBackground';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const config = getSiteConfig();
+  const config = await getSiteConfig();
   return {
     title: config.seoTitle,
     description: config.seoDescription,
@@ -30,12 +30,12 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const config = getSiteConfig();
+  const config = await getSiteConfig();
 
   return (
     <html lang="en" className="dark scroll-smooth">

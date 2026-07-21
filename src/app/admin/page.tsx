@@ -16,7 +16,7 @@ export default async function AdminPage() {
     redirect('/admin/login');
   }
 
-  const config = getSiteConfig();
+  const config = await getSiteConfig();
 
   return <AdminDashboard initialConfig={config} />;
 }

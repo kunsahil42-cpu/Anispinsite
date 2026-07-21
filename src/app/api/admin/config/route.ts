@@ -11,7 +11,7 @@ async function isAuthorized() {
 }
 
 export async function GET() {
-  const config = getSiteConfig();
+  const config = await getSiteConfig();
   return NextResponse.json(config);
 }
 
@@ -22,9 +22,10 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const updated = saveSiteConfig(body);
+    const updated = await saveSiteConfig(body);
     return NextResponse.json({ success: true, config: updated });
-  } catch {
+  } catch (error) {
+    console.error('Failed to save configuration:', error);
     return NextResponse.json({ error: 'Failed to save configuration' }, { status: 500 });
   }
 }

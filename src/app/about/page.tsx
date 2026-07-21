@@ -8,8 +8,8 @@ export const metadata = {
   description: 'Learn about the engineering, design principles, and features behind the official AniSpin Android app.',
 };
 
-export default function AboutPage() {
-  const config = getSiteConfig();
+export default async function AboutPage() {
+  const config = await getSiteConfig();
 
   return (
     <div className="pt-28 pb-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
