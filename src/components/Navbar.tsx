@@ -30,6 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({ config }) => {
     { name: 'Changelog', href: '/changelog' },
     { name: 'FAQ', href: '/faq' },
     { name: 'Community', href: '/community' },
+    { name: 'Contact', href: '/contact' },
   ];
 
   const isActive = (href: string) => {

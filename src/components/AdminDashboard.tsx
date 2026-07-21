@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   ShieldCheck, LogOut, Save, RefreshCw, Download, Globe,
-  Sparkles, MessageSquare, Disc as Discord, CheckCircle2, AlertCircle, FileText,
-  Info, Trash2, Edit, Plus, Eye, AlertTriangle, Play, Apple, X, Check, History
+  Sparkles, MessageSquare, Send as Telegram, CheckCircle2, AlertCircle, FileText,
+  Info, Trash2, Edit, Plus, Eye, AlertTriangle, Play, Apple, X, Check, History,
+  Mail, Pin, PinOff, Copy, FileJson, Search, Filter
 } from 'lucide-react';
-import { SiteConfig, ChangelogItem } from '@/types';
+import { SiteConfig, ChangelogItem, ContactMessage } from '@/types';
 
 interface AdminDashboardProps {
   initialConfig: SiteConfig;
@@ -16,9 +17,104 @@ interface AdminDashboardProps {
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig }) => {
   const [config, setConfig] = useState<SiteConfig>(initialConfig);
   const [saving, setSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState<'general' | 'downloads' | 'community' | 'seo'>('downloads');
+  const [activeTab, setActiveTab] = useState<'general' | 'downloads' | 'community' | 'seo' | 'messages'>('downloads');
   const [toastMessage, setToastMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   
+  // Contact messages state
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [messagesLoading, setMessagesLoading] = useState(false);
+  const [messageSearch, setMessageSearch] = useState('');
+  const [messageFilter, setMessageFilter] = useState<'All' | 'Unread' | 'Read' | 'Replied' | 'Archived'>('All');
+  const [messagePinFilter, setMessagePinFilter] = useState<'all' | 'pinned'>('all');
+
+  const fetchMessages = async () => {
+    setMessagesLoading(true);
+    try {
+      const res = await fetch('/api/admin/messages');
+      if (res.ok) {
+        const data = await res.json();
+        setMessages(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch messages:', error);
+    } finally {
+      setMessagesLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMessages();
+  }, []);
+
+  const handleUpdateMessageStatus = async (id: string, status: string) => {
+    try {
+      const res = await fetch('/api/admin/messages', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status })
+      });
+      if (res.ok) {
+        setMessages(prev => prev.map(m => m.id === id ? { ...m, status: status as any } : m));
+      } else {
+        setToastMessage({ type: 'error', text: 'Failed to update message status.' });
+      }
+    } catch {
+      setToastMessage({ type: 'error', text: 'Connection error while updating status.' });
+    }
+  };
+
+  const handleToggleMessagePin = async (id: string, pinned: boolean) => {
+    try {
+      const res = await fetch('/api/admin/messages', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, pinned })
+      });
+      if (res.ok) {
+        setMessages(prev => prev.map(m => m.id === id ? { ...m, pinned } : m));
+      } else {
+        setToastMessage({ type: 'error', text: 'Failed to toggle message pin.' });
+      }
+    } catch {
+      setToastMessage({ type: 'error', text: 'Connection error while pinning.' });
+    }
+  };
+
+  const handleDeleteMessage = async (id: string) => {
+    if (confirm('Are you sure you want to delete this message permanently?')) {
+      try {
+        const res = await fetch(`/api/admin/messages?id=${id}`, {
+          method: 'DELETE'
+        });
+        if (res.ok) {
+          setMessages(prev => prev.filter(m => m.id !== id));
+          setToastMessage({ type: 'success', text: 'Message permanently deleted.' });
+        } else {
+          setToastMessage({ type: 'error', text: 'Failed to delete message.' });
+        }
+      } catch {
+        setToastMessage({ type: 'error', text: 'Connection error while deleting.' });
+      }
+    }
+  };
+
+  const handleExportMessages = () => {
+    try {
+      const jsonStr = JSON.stringify(messages, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `anispin-support-messages-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setToastMessage({ type: 'success', text: 'Contact messages exported successfully!' });
+    } catch {
+      setToastMessage({ type: 'error', text: 'Failed to export messages.' });
+    }
+  };
+
   // State for Changelog Editor Sub-Form
   const [editingChangelog, setEditingChangelog] = useState<Partial<ChangelogItem> | null>(null);
   const [isAddingNewChangelog, setIsAddingNewChangelog] = useState(false);
@@ -245,11 +341,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig })
           {[
             { id: 'downloads', label: 'APK & Release Management', icon: Download },
             { id: 'general', label: 'App & Aesthetics', icon: FileText },
-            { id: 'community', label: 'Social & Community Links', icon: Discord },
+            { id: 'community', label: 'Social & Community Links', icon: Telegram },
             { id: 'seo', label: 'SEO & Meta Tags', icon: Globe },
+            { id: 'messages', label: 'Contact Messages', icon: Mail },
           ].map((tab) => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
+            const unreadCount = messages.filter(m => m.status === 'Unread').length;
             return (
               <button
                 key={tab.id}
@@ -266,6 +364,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig })
               >
                 <Icon className="w-4 h-4" />
                 <span>{tab.label}</span>
+                {tab.id === 'messages' && unreadCount > 0 && (
+                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-red-500 text-white animate-pulse">
+                    {unreadCount}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -887,13 +990,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig })
             <div className="space-y-6">
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-300 uppercase flex items-center space-x-2">
-                  <Discord className="w-4 h-4 text-purple-400" />
-                  <span>Discord Invite URL</span>
+                  <Telegram className="w-4 h-4 text-purple-400" />
+                  <span>Telegram Channel URL</span>
                 </label>
                 <input
                   type="text"
-                  value={config.discordUrl}
-                  onChange={(e) => setConfig({ ...config, discordUrl: e.target.value })}
+                  value={config.telegramUrl || ''}
+                  onChange={(e) => setConfig({ ...config, telegramUrl: e.target.value })}
                   className="w-full bg-void-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500 font-mono"
                 />
               </div>
@@ -953,6 +1056,265 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig })
                 />
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Tab: Contact Messages Management */}
+        {activeTab === 'messages' && (
+          <div className="bg-surface-container/85 border border-white/10 p-6 sm:p-8 rounded-3xl space-y-6 animate-in fade-in duration-200">
+            
+            {/* Header with Search and Export */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-5">
+              <div>
+                <h3 className="text-lg font-bold text-white font-display flex items-center space-x-2">
+                  <Mail className="w-5 h-5 text-purple-400" />
+                  <span>Support Portal Influx ({messages.length} total)</span>
+                </h3>
+                <p className="text-xs text-slate-400">Inspect, organize, and reply to client dispatches live.</p>
+              </div>
+              <button
+                onClick={handleExportMessages}
+                className="px-4 py-2 rounded-xl bg-void-900 border border-white/10 hover:border-purple-500/40 text-slate-300 hover:text-purple-300 text-xs font-bold transition-all flex items-center space-x-2 w-fit"
+              >
+                <FileJson className="w-4 h-4" />
+                <span>Export to JSON Backup</span>
+              </button>
+            </div>
+
+            {/* Filters and Search Bar Container */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+              
+              {/* Search Bar */}
+              <div className="md:col-span-6 relative">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500">
+                  <Search className="w-4 h-4" />
+                </span>
+                <input
+                  type="text"
+                  value={messageSearch}
+                  onChange={(e) => setMessageSearch(e.target.value)}
+                  placeholder="Search sender name, email, or message keyword..."
+                  className="w-full bg-void-950 border border-white/10 focus:border-purple-500 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:outline-none transition-all placeholder:text-slate-650"
+                />
+              </div>
+
+              {/* Status Filter buttons */}
+              <div className="md:col-span-6 flex flex-wrap gap-2 justify-start md:justify-end">
+                {(['All', 'Unread', 'Read', 'Replied', 'Archived'] as const).map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setMessageFilter(filter)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all ${
+                      messageFilter === filter
+                        ? 'bg-purple-600 border-purple-500 text-white shadow-neon-purple/20'
+                        : 'bg-void-950/80 border-white/5 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <span>{filter}</span>
+                  </button>
+                ))}
+              </div>
+
+            </div>
+
+            {/* Messages Grid/List view */}
+            <div className="space-y-4">
+              {messagesLoading ? (
+                <div className="flex flex-col items-center justify-center py-20 space-y-3">
+                  <RefreshCw className="w-8 h-8 text-purple-400 animate-spin" />
+                  <span className="text-xs text-slate-500">Loading messages from server...</span>
+                </div>
+              ) : (
+                (() => {
+                  // Filtered and Sorted messages
+                  const filtered = messages
+                    .filter((msg) => {
+                      // Status filter
+                      if (messageFilter !== 'All' && msg.status !== messageFilter) return false;
+                      
+                      // Search filter
+                      const query = messageSearch.toLowerCase();
+                      if (query) {
+                        return (
+                          msg.name.toLowerCase().includes(query) ||
+                          msg.email.toLowerCase().includes(query) ||
+                          msg.message.toLowerCase().includes(query)
+                        );
+                      }
+                      return true;
+                    })
+                    .sort((a, b) => {
+                      // Pin sorting: pinned items always float to the top
+                      if (a.pinned && !b.pinned) return -1;
+                      if (!a.pinned && b.pinned) return 1;
+                      
+                      // Secondary sorting: newer dates first
+                      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                    });
+
+                  if (filtered.length === 0) {
+                    return (
+                      <div className="text-center py-16 bg-void-950/40 border border-dashed border-white/5 rounded-2xl text-xs text-slate-500">
+                        No contact dispatches found matching criteria.
+                      </div>
+                    );
+                  }
+
+                  return filtered.map((msg) => {
+                    const isUnread = msg.status === 'Unread';
+                    return (
+                      <div
+                        key={msg.id}
+                        className={`group relative bg-void-950/60 hover:bg-void-950 border rounded-2xl p-5 sm:p-6 transition-all duration-300 flex flex-col md:flex-row justify-between items-start gap-6 border-l-4 ${
+                          msg.pinned
+                            ? 'border-cyan-500/50'
+                            : isUnread
+                            ? 'border-purple-500'
+                            : 'border-white/5'
+                        }`}
+                      >
+                        {/* Message details */}
+                        <div className="space-y-3 flex-1">
+                          
+                          {/* Sender details and Pin indicator */}
+                          <div className="flex items-center space-x-2 flex-wrap gap-1.5">
+                            {msg.pinned && (
+                              <span className="px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-[9px] font-black uppercase flex items-center space-x-1 animate-pulse">
+                                <Pin className="w-2.5 h-2.5 fill-cyan-400 shrink-0" />
+                                <span>Pinned</span>
+                              </span>
+                            )}
+                            {isUnread && (
+                              <span className="h-2 w-2 rounded-full bg-purple-500 animate-ping inline-block" />
+                            )}
+                            <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase border ${
+                              isUnread 
+                                ? 'bg-purple-500/10 text-purple-400 border-purple-500/30' 
+                                : msg.status === 'Replied'
+                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                                : msg.status === 'Archived'
+                                ? 'bg-slate-800 text-slate-400 border-white/10'
+                                : 'bg-blue-500/10 text-blue-400 border-blue-500/30'
+                            }`}>
+                              {msg.status}
+                            </span>
+                            <span className="text-xs font-black text-white font-display">{msg.name}</span>
+                            <span className="text-slate-500 text-xs font-mono">&lt;{msg.email}&gt;</span>
+                          </div>
+
+                          {/* Message Body */}
+                          <p className="text-xs sm:text-sm text-slate-350 leading-relaxed whitespace-pre-wrap break-words">
+                            {msg.message}
+                          </p>
+
+                          {/* Timestamp and Metadata */}
+                          <div className="flex items-center space-x-4 text-[10px] text-slate-500 border-t border-white/5 pt-2.5 flex-wrap gap-2">
+                            <span>Logged: {new Date(msg.createdAt).toLocaleString()}</span>
+                            {msg.ipAddress && (
+                              <span>IP Address: <span className="font-mono text-slate-400">{msg.ipAddress}</span></span>
+                            )}
+                            {msg.userAgent && (
+                              <span className="truncate max-w-[200px]" title={msg.userAgent}>Device: {msg.userAgent}</span>
+                            )}
+                          </div>
+
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="flex items-center space-x-1.5 md:self-center shrink-0 w-full md:w-auto justify-end border-t border-white/5 md:border-t-0 pt-3 md:pt-0">
+                          
+                          {/* Toggle status: Read/Unread */}
+                          {isUnread ? (
+                            <button
+                              onClick={() => handleUpdateMessageStatus(msg.id, 'Read')}
+                              className="px-2.5 py-1.5 rounded-lg bg-surface-container/60 hover:bg-purple-650/20 text-slate-400 hover:text-purple-300 border border-white/5 text-[10px] font-bold transition-all"
+                            >
+                              Mark Read
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleUpdateMessageStatus(msg.id, 'Unread')}
+                              className="px-2.5 py-1.5 rounded-lg bg-surface-container/60 hover:bg-purple-650/10 text-slate-450 hover:text-purple-400 border border-white/5 text-[10px] font-bold transition-all"
+                            >
+                              Mark Unread
+                            </button>
+                          )}
+
+                          {/* Mark Replied */}
+                          {msg.status !== 'Replied' && (
+                            <button
+                              onClick={() => handleUpdateMessageStatus(msg.id, 'Replied')}
+                              className="px-2.5 py-1.5 rounded-lg bg-surface-container/60 hover:bg-emerald-600/20 text-slate-400 hover:text-emerald-300 border border-white/5 text-[10px] font-bold transition-all"
+                            >
+                              Mark Replied
+                            </button>
+                          )}
+
+                          {/* Archive message */}
+                          {msg.status !== 'Archived' ? (
+                            <button
+                              onClick={() => handleUpdateMessageStatus(msg.id, 'Archived')}
+                              className="px-2.5 py-1.5 rounded-lg bg-surface-container/60 hover:bg-slate-800 text-slate-450 hover:text-slate-300 border border-white/5 text-[10px] font-bold transition-all"
+                            >
+                              Archive
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleUpdateMessageStatus(msg.id, 'Read')}
+                              className="px-2.5 py-1.5 rounded-lg bg-surface-container/60 hover:bg-slate-800 text-slate-450 hover:text-slate-350 border border-white/5 text-[10px] font-bold transition-all"
+                            >
+                              Unarchive
+                            </button>
+                          )}
+
+                          {/* Pin Toggle */}
+                          <button
+                            onClick={() => handleToggleMessagePin(msg.id, !msg.pinned)}
+                            className={`p-2 rounded-lg border border-white/5 transition-all ${
+                              msg.pinned
+                                ? 'bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20'
+                                : 'bg-surface-container/60 text-slate-455 hover:text-cyan-300'
+                            }`}
+                            title={msg.pinned ? 'Unpin message' : 'Pin message'}
+                          >
+                            {msg.pinned ? (
+                              <PinOff className="w-3.5 h-3.5" />
+                            ) : (
+                              <Pin className="w-3.5 h-3.5" />
+                            )}
+                          </button>
+
+                          {/* Copy email */}
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(msg.email);
+                              setToastMessage({ type: 'success', text: `Copied <${msg.email}> to clipboard!` });
+                              setTimeout(() => setToastMessage(null), 3000);
+                            }}
+                            className="p-2 rounded-lg bg-surface-container/60 hover:bg-purple-600/10 text-slate-455 hover:text-purple-300 border border-white/5 transition-all"
+                            title="Copy email to clipboard"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
+
+                          {/* Delete message */}
+                          <button
+                            onClick={() => handleDeleteMessage(msg.id)}
+                            className="p-2 rounded-lg bg-surface-container/60 hover:bg-red-500/15 text-slate-455 hover:text-red-400 border border-white/5 transition-all"
+                            title="Delete permanently"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+
+                        </div>
+
+                      </div>
+                    );
+                  });
+                })()
+              )}
+            </div>
+
           </div>
         )}
 

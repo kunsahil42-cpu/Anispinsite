@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Heart, Disc as Discord, MessageSquare, ShieldCheck, Download, Sparkles, Terminal } from 'lucide-react';
+import { Heart, Send, MessageSquare, ShieldCheck, Download, Sparkles, Terminal } from 'lucide-react';
 import { SiteConfig } from '@/types';
 
 interface FooterProps {
@@ -39,13 +39,13 @@ export const Footer: React.FC<FooterProps> = ({ config }) => {
 
             <div className="flex items-center space-x-3 pt-2">
               <a
-                href={config.discordUrl}
+                href={config.telegramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-purple-900/30 border border-purple-500/30 text-purple-300 hover:text-white hover:bg-purple-800/40 text-xs font-semibold transition-all shadow-sm"
               >
-                <Discord className="w-4 h-4 text-purple-400" />
-                <span>Discord</span>
+                <Send className="w-4 h-4 text-purple-400" />
+                <span>Telegram</span>
               </a>
               <a
                 href={config.redditUrl}
@@ -89,6 +89,11 @@ export const Footer: React.FC<FooterProps> = ({ config }) => {
               <li>
                 <Link href="/faq" className="hover:text-purple-300 transition-colors">
                   Search FAQ
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-purple-300 transition-colors">
+                  Contact Us
                 </Link>
               </li>
             </ul>

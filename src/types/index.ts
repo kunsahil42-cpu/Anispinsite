@@ -22,7 +22,7 @@ export interface SiteConfig {
   playStoreEnabled: boolean;
   appStoreUrl: string;
   appStoreEnabled: boolean;
-  discordUrl: string;
+  telegramUrl: string;
   redditUrl: string;
   githubUrl: string;
   seoTitle: string;
@@ -76,4 +76,16 @@ export interface FeatureCard {
   icon: string;
   badge: string;
   gradient: string;
+}
+
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  createdAt: string;
+  ipAddress?: string;
+  userAgent?: string;
+  status: 'Unread' | 'Read' | 'Replied' | 'Archived';
+  pinned?: boolean;
 }

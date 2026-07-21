@@ -100,7 +100,7 @@ export const initialSiteConfig: SiteConfig = {
   playStoreEnabled: false,
   appStoreUrl: 'https://apps.apple.com/app/anispin/id640000000',
   appStoreEnabled: false,
-  discordUrl: 'https://discord.gg/anispin',
+  telegramUrl: 'https://t.me/anispinapp',
   redditUrl: 'https://reddit.com/r/AniSpin',
   githubUrl: 'https://github.com/anispin/anispin',
   seoTitle: 'AniSpin - Watch Anime & Read Manga Free | Official Android App',

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Disc as Discord, MessageSquare, ExternalLink, Users, Sparkles } from 'lucide-react';
+import { Send, MessageSquare, ExternalLink, Users, Sparkles } from 'lucide-react';
 import { SiteConfig } from '@/types';
 
 interface CommunitySectionProps {
@@ -34,35 +34,35 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({ config }) =>
         {/* Community Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           
-          {/* Discord Card */}
+          {/* Telegram Card */}
           <div className="group relative bg-surface-container/80 border border-purple-500/30 hover:border-purple-500 rounded-3xl p-8 transition-all duration-300 shadow-xl hover:shadow-neon-purple/30 hover:-translate-y-1 flex flex-col justify-between">
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="w-14 h-14 rounded-2xl bg-purple-600/30 border border-purple-500/40 text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <Discord className="w-8 h-8" />
+                  <Send className="w-8 h-8" />
                 </div>
                 <span className="px-3 py-1 rounded-full bg-purple-900/50 text-purple-300 text-xs font-bold border border-purple-500/30 flex items-center space-x-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>25,400+ Online</span>
+                  <span>45,000+ Members</span>
                 </span>
               </div>
 
               <div>
-                <h3 className="text-2xl font-black text-white font-display mb-2">Discord Server</h3>
+                <h3 className="text-2xl font-black text-white font-display mb-2">Telegram Channel</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">
-                  Join our official Discord community for live anime watch parties, episode release countdowns, bug reports, and beta testing feedback.
+                  Join our official Telegram channel for direct APK updates, release alerts, feature discussions, and instant support.
                 </p>
               </div>
             </div>
 
             <div className="pt-8">
               <a
-                href={config.discordUrl}
+                href={config.telegramUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-sm shadow-neon-purple hover:shadow-neon-cyan transition-all flex items-center justify-center space-x-2"
               >
-                <span>Join Discord Server</span>
+                <span>Join Telegram Channel</span>
                 <ExternalLink className="w-4 h-4" />
               </a>
             </div>
