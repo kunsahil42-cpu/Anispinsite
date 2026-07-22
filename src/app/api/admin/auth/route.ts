@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 // Default Admin Password (can be overridden via process.env.ADMIN_PASSWORD)
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'anispin2026';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'anispin6025';
 const AUTH_COOKIE_NAME = 'anispin_admin_session';
 
 export async function POST(request: Request) {
