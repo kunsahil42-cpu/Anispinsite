@@ -8,6 +8,8 @@ export const metadata = {
   description: 'Learn about the engineering, design principles, and features behind the official AniSpin Android app.',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function AboutPage() {
   const config = await getSiteConfig();
 

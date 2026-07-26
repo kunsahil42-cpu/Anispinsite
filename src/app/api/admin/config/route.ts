@@ -4,6 +4,8 @@ import { getSiteConfig, saveSiteConfig } from '@/lib/configStore';
 
 const AUTH_COOKIE_NAME = 'anispin_admin_session';
 
+export const dynamic = 'force-dynamic';
+
 async function isAuthorized() {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get(AUTH_COOKIE_NAME);

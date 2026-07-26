@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { put, list } from '@vercel/blob';
+import { cache } from 'react';
 
 export interface ContactMessage {
   id: string;
@@ -17,9 +18,6 @@ export interface ContactMessage {
 const PRIMARY_PATH = path.join(process.cwd(), 'data', 'contact-messages.json');
 const TMP_PATH = path.join('/tmp', 'contact-messages.json');
 
-// Memory cache fallback
-let inMemoryMessages: ContactMessage[] | null = null;
-
 // Helper to list and find Vercel Blob URL
 async function getVercelBlobUrl(): Promise<string | null> {
   if (!process.env.BLOB_READ_WRITE_TOKEN) return null;
@@ -33,7 +31,7 @@ async function getVercelBlobUrl(): Promise<string | null> {
   }
 }
 
-export async function getMessages(): Promise<ContactMessage[]> {
+export const getMessages = cache(async (): Promise<ContactMessage[]> => {
   // 1. Try reading from Vercel Blob if token is present
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     try {
@@ -42,7 +40,6 @@ export async function getMessages(): Promise<ContactMessage[]> {
         const res = await fetch(url, { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
-          inMemoryMessages = data;
           return data;
         }
       }
@@ -56,7 +53,6 @@ export async function getMessages(): Promise<ContactMessage[]> {
     if (fs.existsSync(PRIMARY_PATH)) {
       const fileData = fs.readFileSync(PRIMARY_PATH, 'utf-8');
       const data = JSON.parse(fileData);
-      inMemoryMessages = data;
       return data;
     }
   } catch (error) {
@@ -68,18 +64,16 @@ export async function getMessages(): Promise<ContactMessage[]> {
     if (fs.existsSync(TMP_PATH)) {
       const fileData = fs.readFileSync(TMP_PATH, 'utf-8');
       const data = JSON.parse(fileData);
-      inMemoryMessages = data;
       return data;
     }
   } catch (error) {
     // File doesn't exist yet
   }
 
-  return inMemoryMessages || [];
-}
+  return [];
+});
 
 export async function saveMessages(messages: ContactMessage[]): Promise<void> {
-  inMemoryMessages = messages;
 
   // 1. Save to Vercel Blob if token is present
   if (process.env.BLOB_READ_WRITE_TOKEN) {

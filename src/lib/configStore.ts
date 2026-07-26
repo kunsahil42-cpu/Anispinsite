@@ -3,13 +3,10 @@ import path from 'path';
 import { SiteConfig } from '@/types';
 import { initialSiteConfig } from './data';
 import { put, list } from '@vercel/blob';
+import { cache } from 'react';
 
 const CONFIG_FILE_PATH = path.join(process.cwd(), 'data', 'site-config.json');
 const TMP_CONFIG_FILE_PATH = path.join('/tmp', 'site-config.json');
-
-// In-memory cache — valid only within a single serverless function lifecycle.
-// On Vercel, each cold-start resets this to null, which is intentional.
-let cachedConfig: SiteConfig | null = null;
 
 // Helper to find the Vercel Blob URL for the config file
 async function getVercelBlobUrl(): Promise<string | null> {
@@ -24,12 +21,7 @@ async function getVercelBlobUrl(): Promise<string | null> {
   }
 }
 
-export async function getSiteConfig(): Promise<SiteConfig> {
-  // Return in-memory cache if available within this function instance
-  if (cachedConfig) {
-    return cachedConfig;
-  }
-
+export const getSiteConfig = cache(async (): Promise<SiteConfig> => {
   // 1. Try Vercel Blob first (persistent cloud storage — requires BLOB_READ_WRITE_TOKEN)
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     try {
@@ -41,7 +33,6 @@ export async function getSiteConfig(): Promise<SiteConfig> {
         if (res.ok) {
           const data = await res.json();
           const config: SiteConfig = { ...initialSiteConfig, ...data };
-          cachedConfig = config;
           console.log('[configStore] Loaded config from Vercel Blob ✅');
           return config;
         }
@@ -65,7 +56,6 @@ export async function getSiteConfig(): Promise<SiteConfig> {
       const fileData = fs.readFileSync(TMP_CONFIG_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
       const config: SiteConfig = { ...initialSiteConfig, ...parsed };
-      cachedConfig = config;
       console.log('[configStore] Loaded config from /tmp fallback (ephemeral)');
       return config;
     }
@@ -79,7 +69,6 @@ export async function getSiteConfig(): Promise<SiteConfig> {
       const fileData = fs.readFileSync(CONFIG_FILE_PATH, 'utf-8');
       const parsed = JSON.parse(fileData);
       const config: SiteConfig = { ...initialSiteConfig, ...parsed };
-      cachedConfig = config;
       console.log('[configStore] Loaded config from bundled site-config.json (read-only)');
       return config;
     }
@@ -89,14 +78,11 @@ export async function getSiteConfig(): Promise<SiteConfig> {
 
   console.log('[configStore] Using hardcoded initialSiteConfig defaults');
   return initialSiteConfig;
-}
+});
 
 export async function saveSiteConfig(newConfig: Partial<SiteConfig>): Promise<SiteConfig> {
   const current = await getSiteConfig();
   const updated: SiteConfig = { ...current, ...newConfig };
-
-  // Always clear the in-memory cache so the next getSiteConfig() reads fresh data
-  cachedConfig = null;
 
   // 1. Save to Vercel Blob (persistent — only available if BLOB_READ_WRITE_TOKEN is set)
   if (process.env.BLOB_READ_WRITE_TOKEN) {
@@ -106,8 +92,6 @@ export async function saveSiteConfig(newConfig: Partial<SiteConfig>): Promise<Si
         addRandomSuffix: false,
       });
       console.log('[configStore] Config saved to Vercel Blob ✅');
-      // Re-populate cache with saved value
-      cachedConfig = updated;
       return updated;
     } catch (error) {
       console.error('[configStore] Failed to save config to Vercel Blob:', error);
@@ -123,7 +107,6 @@ export async function saveSiteConfig(newConfig: Partial<SiteConfig>): Promise<Si
     }
     fs.writeFileSync(CONFIG_FILE_PATH, JSON.stringify(updated, null, 2), 'utf-8');
     console.log('[configStore] Config saved to local data/site-config.json ✅');
-    cachedConfig = updated;
     return updated;
   } catch (error: any) {
     console.warn(
@@ -144,7 +127,6 @@ export async function saveSiteConfig(newConfig: Partial<SiteConfig>): Promise<Si
       '[configStore] ⚠️  Config saved to /tmp only — this is EPHEMERAL and will be lost on next cold start. ' +
       'Set BLOB_READ_WRITE_TOKEN to enable permanent storage.'
     );
-    cachedConfig = updated;
     return updated;
   } catch (error) {
     console.error('[configStore] All save attempts failed:', error);
