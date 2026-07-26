@@ -2,10 +2,10 @@ import { SiteConfig, AppScreenshot, ChangelogItem, FAQItem, FeatureCard } from '
 
 export const changelogData: ChangelogItem[] = [
   {
-    id: 'v2.0.0',
-    version: 'v2.0.0',
+    id: 'v2.1.0',
+    version: 'v2.1.0',
     date: 'July 2026',
-    title: 'Official AniSpin v2.0.0 Release',
+    title: 'Official AniSpin v2.1.0 Release',
     tag: 'Major Release',
     changes: {
       added: [
@@ -84,13 +84,13 @@ export const changelogData: ChangelogItem[] = [
 export const initialSiteConfig: SiteConfig = {
   appName: 'AniSpin',
   tagline: 'Your Next-Generation Dual Anime Streaming & Manga Reading Ecosystem',
-  heroBadgeText: 'v2.0.0 Official Release',
-  version: '2.0.0',
+  heroBadgeText: 'v2.1.0 Official Release',
+  version: '2.1.0',
   releaseDate: 'July 2026',
   apkSize: '70 MB',
   minAndroidVersion: 'Android 8.0 (Oreo) or higher',
   sha256Hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-  primaryApkUrl: 'https://github.com/kunsahil42-cpu/AniSpin-v2/releases/download/v2.0.0/AniSpin.apk',
+  primaryApkUrl: 'https://github.com/kunsahil42-cpu/AniSpin-v2/releases/download/v2.1.0/Anispinv3.apk',
   mirrors: [
     { id: '1', name: 'Official Direct Server (Fast)', url: 'https://download.anispin.app/v1.2.0/AniSpin-v1.2.0.apk', isPrimary: true, speed: '1 Gbps', location: 'Global CDN' },
     { id: '2', name: 'GitHub Releases Mirror', url: 'https://github.com/anispin/anispin/releases/download/v1.2.0/AniSpin.apk', isPrimary: false, speed: 'Fast', location: 'Worldwide' },
