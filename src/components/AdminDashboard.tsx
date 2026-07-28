@@ -416,7 +416,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig })
                       type="text"
                       value={config.version}
                       onChange={(e) => setConfig({ ...config, version: e.target.value })}
-                      placeholder="e.g. 2.1.0"
+                      placeholder="e.g. 2.5.0"
                       className="w-full bg-void-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500 font-mono"
                     />
                   </div>
@@ -471,7 +471,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig })
                     type="text"
                     value={config.primaryApkUrl}
                     onChange={(e) => setConfig({ ...config, primaryApkUrl: e.target.value })}
-                    placeholder="https://github.com/kunsahil42-cpu/AniSpin-v2/releases/download/v2.1.0/Anispinv3.apk"
+                    placeholder="https://github.com/kunsahil42-cpu/AniSpin-v2/releases/download/v2.5.0/Anispinv2.5.apk"
                     className="w-full bg-void-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-purple-500 font-mono"
                   />
                   {!validation.isValid && (
@@ -608,7 +608,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig })
                           type="text"
                           value={changelogFormValues.version}
                           onChange={(e) => setChangelogFormValues({ ...changelogFormValues, version: e.target.value })}
-                          placeholder="e.g. v2.1.0"
+                          placeholder="e.g. v2.5.0"
                           className="w-full bg-void-900 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500 font-mono"
                         />
                       </div>
@@ -821,7 +821,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ initialConfig })
                 {/* Mock Card */}
                 <div className="bg-surface-container/60 border border-purple-500/20 rounded-2xl p-4.5 space-y-4 relative overflow-hidden">
                   <div className="absolute top-0 right-0 px-3 py-1 bg-gradient-to-l from-purple-600 to-cyan-500 text-white font-extrabold text-[9px] rounded-bl-xl uppercase tracking-wider">
-                    {config.version || '2.1.0'} Stable
+                    {config.version || '2.5.0'} Stable
                   </div>
 
                   <div className="flex items-center space-x-3">
